@@ -1,0 +1,58 @@
+<div class="container mt-3" style="max-width: 500px">
+  <div class="card">
+    <div class="card-header text-center">
+      <h3>{{ id ? 'Editar Producto' : 'Nuevo Producto' }}</h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <!-- Nombre -->
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input
+            type="text"
+            id="nombre"
+            class="form-control"
+            formControlName="nombre"
+            [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
+          />
+          <div class="invalid-feedback">El nombre es obligatorio</div>
+        </div>
+
+        <!-- Marca -->
+        <div class="mb-3">
+          <label for="marca" class="form-label">Marca</label>
+          <input
+            type="text"
+            id="marca"
+            class="form-control"
+            formControlName="marca"
+            [class.is-invalid]="form.get('marca')?.invalid && form.get('marca')?.touched"
+          />
+          <div class="invalid-feedback">La marca es obligatoria</div>
+        </div>
+
+        <!-- Precio -->
+        <div class="mb-3">
+          <label for="precio" class="form-label">Precio</label>
+          <input
+            type="number"
+            id="precio"
+            class="form-control"
+            formControlName="precio"
+            [class.is-invalid]="form.get('precio')?.invalid && form.get('precio')?.touched"
+            min="1"
+          />
+          <div class="invalid-feedback">El precio es obligatorio y debe ser mayor a 0</div>
+        </div>
+
+        <!-- Botones -->
+        <div class="d-flex justify-content-between">
+          <button type="submit" class="btn btn-primary">
+            {{ id ? 'Actualizar' : 'Guardar' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

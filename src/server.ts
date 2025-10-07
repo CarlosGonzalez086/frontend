@@ -27,13 +27,21 @@ const angularApp = new AngularNodeAppEngine();
 /**
  * Serve static files from /browser
  */
-app.use(
-  express.static(browserDistFolder, {
-    maxAge: '1y',
-    index: false,
-    redirect: false,
-  }),
-);
+app.get(/^\/(?!.*\.\w+$)/, (req, res) => {
+  angularApp
+    .handle(req)
+    .then((response) => {
+      if (response) {
+        writeResponseToNodeResponse(response, res);
+      } else {
+        res.sendFile(join(browserDistFolder, 'index.html'));
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error en el servidor');
+    });
+});
 
 /**
  * Handle all other requests by rendering the Angular application.

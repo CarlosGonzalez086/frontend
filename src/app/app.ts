@@ -1,12 +1,34 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from './layout/header/header.component';
+import { SidebarComponent } from './layout/sidebar/sidebar.component';
+import { isPlatformBrowser, NgIf } from '@angular/common'; // <-- NgIf importado
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [HeaderComponent, SidebarComponent, RouterOutlet, NgIf], // <-- NgIf agregado
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
-export class App {
+export class App implements OnInit {
   protected readonly title = signal('frontend');
+
+  isSidebarCollapsed = false;
+  isBrowser = false;
+  isLoggedIn = false;
+
+  private platformId = inject(PLATFORM_ID);
+
+  ngOnInit(): void {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+    if (this.isBrowser) {
+      const storedUser = localStorage.getItem('user');
+      this.isLoggedIn = !!storedUser;
+    }
+  }
+
+  onToggleSidebar() {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+  }
 }

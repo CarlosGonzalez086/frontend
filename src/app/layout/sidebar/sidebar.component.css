@@ -1,0 +1,30 @@
+.sidebar {
+  transition: width 0.3s;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar:not(.collapsed) {
+  width: 250px;
+}
+
+.navbar-dark .nav-link {
+  color: white; /* Default color for non-active links */
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add ellipsis for truncated text */
+  max-width: 100%; /* Ensure it respects the container width */
+}
+
+.navbar-dark .nav-link.active {
+  background-color: #ffda35; /* Yellow background for active link */
+  color: black; /* Black text for active link */
+}
+
+/* Adjust padding or text alignment for collapsed state */
+.sidebar.collapsed .nav-link {
+  padding-left: 10px; /* Reduce padding for better fit */
+  text-align: left; /* Align text to the left */
+}
