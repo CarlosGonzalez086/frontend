@@ -5,9 +5,8 @@ import { map } from 'rxjs/operators';
 
 export const environment = {
   production: false,
-  apiUrl: 'http://127.0.0.1:8000/api' 
+  apiUrl: 'http://127.0.0.1:8000/api',
 };
-
 
 export interface Perfil {
   id: string;
@@ -21,7 +20,7 @@ export interface Usuario {
   id: string;
   codigo?: string;
   nombre: string;
-  usuario: string; // email
+  usuario: string;
   telefono?: string;
   fotoPerfil?: string;
   password?: string;
@@ -54,8 +53,8 @@ export class UsuariosService {
             id,
             perfil_id,
           } as Usuario;
-        })
-      )
+        }),
+      ),
     );
   }
 
@@ -88,7 +87,7 @@ export class UsuariosService {
           },
           perfiles: perfilesDocs,
         };
-      })
+      }),
     );
   }
 

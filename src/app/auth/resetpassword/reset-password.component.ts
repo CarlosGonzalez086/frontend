@@ -32,7 +32,7 @@ export class ResetPasswordComponent {
     }
 
     this.http
-      .post<any>('http://127.0.0.1:8000/api/reset-password', {
+      .post<any>('http://127.0.0.1:8000/api/auth/reset-password', {
         token: this.token,
         new_password: this.newPassword,
         new_password_confirmation: this.confirmPassword,

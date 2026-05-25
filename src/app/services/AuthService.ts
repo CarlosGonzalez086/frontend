@@ -2,7 +2,6 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
 export interface User {
   id?: number;
   nombre?: string;
@@ -11,7 +10,6 @@ export interface User {
   rol?: string;
   perfiles?: string[];
 }
-
 export interface AuthResponse {
   codigo: string;
   mensaje: string;
@@ -21,9 +19,7 @@ export interface AuthResponse {
     email: string;
   };
 }
-
 export type Rol = 'usuario' | 'admin' | string;
-
 interface StoredPerfil {
   codigo: string;
   nombre: string;
@@ -32,7 +28,6 @@ interface StoredPerfil {
   updated_at: string;
   id: string;
 }
-
 interface StoredUser {
   user_id: string | number;
   name?: string;
@@ -42,7 +37,6 @@ interface StoredUser {
   token?: string;
   perfiles?: StoredPerfil[];
 }
-
 interface JwtPayload {
   iat: number;
   exp: number;
@@ -51,14 +45,16 @@ interface JwtPayload {
   rol?: Rol;
   perfiles?: StoredPerfil[];
 }
-
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = 'http://127.0.0.1:8000/api/auth';
 
-  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object,
+  ) {}
 
   private isBrowser(): boolean {
     return isPlatformBrowser(this.platformId);
@@ -92,10 +88,6 @@ export class AuthService {
       localStorage.removeItem('user');
     }
   }
-
-  // =====================
-  // Helpers de localStorage/JWT
-  // =====================
 
   getStoredUser(key = 'user'): StoredUser | null {
     if (!this.isBrowser()) return null;
@@ -158,7 +150,6 @@ export class AuthService {
     if (!this.isBrowser()) return;
 
     try {
-      // Local/session storage
       try {
         sessionStorage.clear();
       } catch {}
@@ -166,7 +157,6 @@ export class AuthService {
         localStorage.clear();
       } catch {}
 
-      // Cookies
       try {
         document.cookie.split(';').forEach((c) => {
           const eqPos = c.indexOf('=');
@@ -193,7 +183,7 @@ export class AuthService {
       (globalThis.atob ?? ((b64: string) => Buffer.from(b64, 'base64').toString('binary')))(base64)
         .split('')
         .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
+        .join(''),
     );
     return JSON.parse(jsonPayload) as T;
   }

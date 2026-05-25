@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-
 import { RegisterComponent } from './auth/register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProductoListComponent } from './producto/producto-list.component';

@@ -22,7 +22,7 @@ export class ForgotPasswordComponent {
     this.error = '';
 
     this.http
-      .post<any>('http://127.0.0.1:8000/api/auth/forgot-password', { usuario: this.email })
+      .post<any>('http://127.0.0.1:8000/api/auth/forgot-password', { email: this.email })
       .subscribe({
         next: (res) => (this.mensaje = res.mensaje),
         error: (err) => (this.error = err.error?.mensaje || 'Error al enviar el correo'),
