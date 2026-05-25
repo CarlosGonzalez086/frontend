@@ -1,15 +1,14 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // Add ChangeDetectorRef
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import { UsuariosService } from '../services/UsuariosService';
 import { Perfil, PerfilService } from '../services/PerfilService';
 
 @Component({
   selector: 'app-usuario-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './usuario-form.component.html',
   styleUrls: ['./usuario-form.component.css'],
 })
@@ -19,7 +18,7 @@ export class UsuarioFormComponent implements OnInit {
   previewUrl: string | ArrayBuffer | null = null;
   selectedFile: File | null = null;
   perfiles: Perfil[] = [];
-  selectedPerfiles: string[] = [];
+  selectedPerfil: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -27,63 +26,71 @@ export class UsuarioFormComponent implements OnInit {
     private perfilService: PerfilService,
     private route: ActivatedRoute,
     private router: Router,
-    private cdr: ChangeDetectorRef // Add ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
 
-    // Initialize form
     this.form = this.fb.group({
       nombre: ['', Validators.required],
       usuario: ['', [Validators.required, Validators.email]],
       password: ['', this.id ? [] : [Validators.required, Validators.minLength(6)]],
       telefono: [''],
       fotoPerfil: ['', Validators.required],
+      perfil: ['', Validators.required],
     });
 
-    // Load profiles from backend
-    this.perfilService.getPerfiles().subscribe({
-      next: (perfiles) => {
-        // Use setTimeout to defer the update to the next change detection cycle
-        setTimeout(() => {
-          this.perfiles = perfiles;
-          this.cdr.detectChanges(); // Manually trigger change detection
-        }, 0);
-      },
-      error: (err) => {
-        console.error('Error loading perfiles:', err);
-      },
-    });
-
-    // If editing a user
     if (this.id) {
       this.usuarioService.getUsuario(this.id).subscribe({
         next: (data) => {
-          console.log('User data:', data); // Debug the data structure
+          const userData = data.usuario;
+          console.log(userData.perfilesIds[0]);
+
           this.form.patchValue({
-            nombre: data.nombre || '',
-            usuario: data.usuario || '',
-            telefono: data.telefono || '',
-            fotoPerfil: data.fotoPerfil || '',
+            nombre: userData.nombre || '',
+            usuario: userData.usuario || '',
+            telefono: userData.telefono || '',
+            fotoPerfil: userData.fotoPerfil || '',
           });
 
-          // Profile picture
-          if (data.fotoPerfil) {
-            this.previewUrl = data.fotoPerfil;
-          }
+          this.previewUrl = userData.fotoPerfil
+            ? `http://127.0.0.1:8000/storage/fotos_perfil/${userData.fotoPerfil}`
+            : 'assets/default-profile.png';
 
-          // Selected profiles
-          if (data.perfiles && Array.isArray(data.perfiles)) {
-            this.selectedPerfiles = data.perfiles.map((p: any) => p._id); // Adjust based on your data
-            this.cdr.detectChanges(); // Trigger change detection
-          }
+          const perfilId = userData.perfilesIds[0];
+
+          this.ensurePerfilSelected(perfilId);
         },
         error: (err) => {
           console.error('Error loading usuario:', err);
         },
       });
     }
+
+    this.perfilService.getPerfiles().subscribe({
+      next: (perfiles: any[]) => {
+        this.perfiles = (perfiles || []).map((p: any) => ({
+          ...p,
+          id: String(p?.id ?? p?._id ?? ''),
+        })) as Perfil[];
+
+        const current = this.form.get('perfil')?.value;
+        if (current) this.form.get('perfil')?.setValue(String(current));
+
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error loading perfiles:', err);
+      },
+    });
+  }
+
+  private ensurePerfilSelected(perfilId: any) {
+    const idStr = perfilId ? String(perfilId) : '';
+    this.selectedPerfil = idStr || null;
+    this.form.get('perfil')?.setValue(idStr);
+    this.cdr.markForCheck();
   }
 
   cancel() {
@@ -94,24 +101,29 @@ export class UsuarioFormComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        input.value = '';
+        this.selectedFile = null;
+        this.previewUrl = null;
+        this.form.get('fotoPerfil')?.setErrors({
+          invalidType: true,
+        });
+        alert('Solo se permiten imágenes JPG, JPEG, PNG, GIF y WEBP');
+        return;
+      }
       this.selectedFile = file;
-      this.form.patchValue({ fotoPerfil: file });
+      this.form.patchValue({
+        fotoPerfil: file,
+      });
       this.form.get('fotoPerfil')?.updateValueAndValidity();
-
       const reader = new FileReader();
       reader.onload = () => {
         this.previewUrl = reader.result;
-        this.cdr.detectChanges(); // Trigger change detection after updating previewUrl
+        this.cdr.markForCheck();
       };
       reader.readAsDataURL(file);
     }
-  }
-
-  onPerfilesChange(event: Event) {
-    const select = event.target as HTMLSelectElement;
-    const options = Array.from(select.selectedOptions, (option) => option.value);
-    this.selectedPerfiles = options;
-    this.cdr.detectChanges(); // Trigger change detection after updating selectedPerfiles
   }
 
   onSubmit() {
@@ -126,18 +138,18 @@ export class UsuarioFormComponent implements OnInit {
     formData.append('telefono', this.form.get('telefono')?.value || '');
     formData.append('rol', 'usuario');
 
-    // Solo enviar contraseña si existe
     if (this.form.get('password')?.value) {
       formData.append('password', this.form.get('password')?.value);
     }
 
-    // Foto de perfil
     if (this.selectedFile) {
       formData.append('fotoPerfil', this.selectedFile);
     }
 
-    // Perfiles
-    this.selectedPerfiles.forEach((id) => formData.append('perfiles[]', id));
+    const perfilId: string = this.form.get('perfil')?.value;
+    if (perfilId) {
+      formData.append('perfil_id', perfilId);
+    }
 
     const request = this.id
       ? this.usuarioService.actualizarUsuario(this.id, formData)

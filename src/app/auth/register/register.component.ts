@@ -7,8 +7,8 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
-  standalone: true, // ⚡
-  imports: [FormsModule, CommonModule], // ⚡ agregamos CommonModule
+  standalone: true, 
+  imports: [FormsModule, CommonModule], 
   templateUrl: './register.component.html',
 })
 export class RegisterComponent {
@@ -25,7 +25,8 @@ export class RegisterComponent {
       nombre: this.nombre,
       usuario: this.email,
       password: this.password,
-      rol: 'admin' // Asignar un rol predeterminado      
+      rol: 'admin', 
+      perfiles: ["68edab4e2790951a2e057447"] 
     };
 
     this.authService.register(newUser).subscribe({

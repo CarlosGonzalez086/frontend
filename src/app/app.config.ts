@@ -20,6 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     importProvidersFrom(HttpClientModule),
         provideHttpClient(withFetch()),
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, // <-- aquí
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }, 
   ],
 };

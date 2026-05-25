@@ -2,18 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// Para listar y editar perfiles (id obligatorio)
 export interface Perfil {
   id: string;
-  codigo: string;
+  codigo?: string;
   nombre: string;
   secciones?: string[];
   created_at?: string;
 }
 
-// Para crear un perfil nuevo (sin id aún)
 export interface CreatePerfil {
-  codigo: string;
   nombre: string;
   secciones?: string[];
 }
@@ -38,12 +35,10 @@ export class PerfilService {
     return this.http.get<Perfil>(`${this.apiUrl}/${id}`);
   }
 
-  // Crear perfil usa CreatePerfil
   createPerfil(perfil: CreatePerfil): Observable<Perfil> {
     return this.http.post<Perfil>(this.apiUrl, perfil);
   }
 
-  // Actualizar perfil usa Perfil completo
   updatePerfil(id: string, perfil: Perfil): Observable<Perfil> {
     return this.http.put<Perfil>(`${this.apiUrl}/${id}`, perfil);
   }

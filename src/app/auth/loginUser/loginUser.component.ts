@@ -6,11 +6,11 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
-  standalone: true,
+  standalone: true, // ⚡
   imports: [CommonModule, FormsModule, RouterModule],
-  templateUrl: './login.component.html',
+  templateUrl: './loginUser.component.html',
 })
-export class LoginComponent {
+export class LoginUserComponent {
   email = '';
   password = '';
   mensajeError = '';
@@ -18,7 +18,7 @@ export class LoginComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   login() {
-    this.authService.login(this.email, this.password).subscribe({
+    this.authService.loginUser(this.email, this.password).subscribe({
       next: (res) => {
         if (res.codigo === '200' && res.respuesta) {
           localStorage.setItem('user', JSON.stringify(res.respuesta));

@@ -18,7 +18,7 @@ export class ProductoFormComponent implements OnInit {
     private fb: FormBuilder,
     private productoService: ProductoService,
     private route: ActivatedRoute,
-    public router: Router // <-- cambiar de private a public
+    public router: Router 
   ) {}
 
   ngOnInit(): void {

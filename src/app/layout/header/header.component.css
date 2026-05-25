@@ -4,8 +4,33 @@ mat-toolbar {
   left: 0;
   right: 0;
   z-index: 1000;
+
+  height: 70px;
+  padding: 0 20px;
+
+  display: flex;
+  align-items: center;
+
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
 .spacer {
   flex: 1 1 auto;
+}
+
+mat-toolbar button {
+  transition: 0.2s ease;
+}
+
+mat-toolbar button:hover {
+  transform: scale(1.05);
+}
+
+mat-toolbar mat-icon {
+  font-size: 24px;
+}
+
+mat-toolbar small {
+  font-size: 12px;
+  line-height: 1;
 }

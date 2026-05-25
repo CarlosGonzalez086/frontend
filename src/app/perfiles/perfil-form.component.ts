@@ -26,7 +26,6 @@ export class PerfilFormComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
 
     this.form = this.fb.group({
-      codigo: ['', Validators.required],
       nombre: ['', Validators.required],
       secciones: [''],
     });
@@ -35,7 +34,6 @@ export class PerfilFormComponent implements OnInit {
       this.perfilService.getPerfil(this.id).subscribe({
         next: (data) => {
           this.form.patchValue({
-            codigo: data.codigo,
             nombre: data.nombre,
             secciones: data.secciones?.join(', '),
           });
@@ -52,7 +50,6 @@ onSubmit() {
   if (this.form.invalid) return;
 
   const perfilData: CreatePerfil = {
-    codigo: this.form.value.codigo,
     nombre: this.form.value.nombre,
     secciones: this.form.value.secciones
       ? this.form.value.secciones.split(',').map((s: string) => s.trim())
@@ -60,8 +57,8 @@ onSubmit() {
   };
 
   const request = this.id
-    ? this.perfilService.updatePerfil(this.id, { ...perfilData, id: this.id })  // Para update
-    : this.perfilService.createPerfil(perfilData);                               // Para create
+    ? this.perfilService.updatePerfil(this.id, { ...perfilData, id: this.id })  
+    : this.perfilService.createPerfil(perfilData);                             
 
   request.subscribe({
     next: () => {

@@ -1,35 +1,85 @@
-<div class="container mt-3" style="max-width: 500px">
-  <div class="card">
-    <div class="card-header text-center">
-      <h3>{{ id ? 'Editar Perfil' : 'Nuevo Perfil' }}</h3>
+<div class="container py-4">
+  <div class="card border-0 shadow-lg rounded-4 mx-auto overflow-hidden" style="max-width: 600px">
+    <div class="bg-primary text-white p-4">
+      <div class="d-flex align-items-center">
+        <div
+          class="bg-white bg-opacity-25 rounded-circle d-flex justify-content-center align-items-center me-3"
+          style="width: 65px; height: 65px"
+        >
+          <i
+            class="bi"
+            [ngClass]="id ? 'bi-pencil-square' : 'bi-person-plus-fill'"
+            style="font-size: 30px"
+          ></i>
+        </div>
+
+        <div>
+          <h3 class="fw-bold mb-1">
+            {{ id ? 'Editar Perfil' : 'Nuevo Perfil' }}
+          </h3>
+
+          <p class="mb-0 opacity-75">
+            {{
+              id
+                ? 'Actualiza la información del perfil'
+                : 'Completa los datos para registrar un perfil'
+            }}
+          </p>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
+
+    <div class="card-body p-4">
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <!-- Código -->
-        <div class="mb-3">
-          <label class="form-label">Código</label>
-          <input type="text" class="form-control" formControlName="codigo"
-            [class.is-invalid]="form.get('codigo')?.invalid && form.get('codigo')?.touched" />
-          <div class="invalid-feedback">El código es obligatorio</div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold"> Nombre del perfil </label>
+
+          <div class="input-group">
+            <span class="input-group-text bg-white">
+              <i class="bi bi-person-badge text-muted"></i>
+            </span>
+
+            <input
+              type="text"
+              class="form-control"
+              formControlName="nombre"
+              placeholder="Ej. Administrador"
+              [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
+            />
+
+            <div class="invalid-feedback">El nombre es obligatorio</div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold"> Secciones </label>
+
+          <div class="input-group">
+            <span class="input-group-text bg-white">
+              <i class="bi bi-grid text-muted"></i>
+            </span>
+
+            <input
+              type="text"
+              class="form-control"
+              formControlName="secciones"
+              placeholder="Dashboard, Usuarios, Productos"
+            />
+          </div>
+
+          <small class="text-muted"> Separa las secciones usando comas. </small>
         </div>
 
-        <!-- Nombre -->
-        <div class="mb-3">
-          <label class="form-label">Nombre</label>
-          <input type="text" class="form-control" formControlName="nombre"
-            [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched" />
-          <div class="invalid-feedback">El nombre es obligatorio</div>
-        </div>
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-end">
+          <button type="button" class="btn btn-light border rounded-3 px-4" (click)="cancel()">
+            <i class="bi bi-arrow-left me-2"></i>
+            Cancelar
+          </button>
 
-        <!-- Secciones -->
-        <div class="mb-3">
-          <label class="form-label">Secciones (coma separado)</label>
-          <input type="text" class="form-control" formControlName="secciones" />
-        </div>
+          <button type="submit" class="btn btn-primary rounded-3 px-4 shadow-sm">
+            <i class="bi me-2" [ngClass]="id ? 'bi-check-circle' : 'bi-save'"></i>
 
-        <div class="d-flex justify-content-between">
-          <button type="submit" class="btn btn-primary">{{ id ? 'Actualizar' : 'Guardar' }}</button>
-          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+            {{ id ? 'Actualizar' : 'Guardar' }}
+          </button>
         </div>
       </form>
     </div>

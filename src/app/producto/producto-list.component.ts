@@ -32,7 +32,7 @@ loadProductos() {
   this.productoService
     .getProductos()
     .pipe(
-      timeout(10000), // Timeout después de 10 segundos
+      timeout(10000), 
       finalize(() => {
         this.loading = false;
         this.cdr.detectChanges();

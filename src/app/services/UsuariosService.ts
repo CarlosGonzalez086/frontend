@@ -3,6 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+export const environment = {
+  production: false,
+  apiUrl: 'http://127.0.0.1:8000/api' 
+};
+
+
 export interface Perfil {
   id: string;
   codigo: string;
@@ -32,23 +38,57 @@ export class UsuariosService {
   constructor(private http: HttpClient) {}
 
   getUsuarios(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(this.apiUrl).pipe(
+    return this.http.get<any[]>(this.apiUrl).pipe(
       map((usuarios) =>
-        usuarios.map((u) => ({
-          ...u,
-          id: u.id || u.id,
-          perfiles: u.perfiles?.map((p) => ({ ...p, id: p.id || p.id })),
-        }))
+        (usuarios || []).map((u: any) => {
+          const id = String(u?._id ?? u?.id ?? '');
+          const perfil_id =
+            u?.perfil_id != null && u?.perfil_id !== ''
+              ? String(u.perfil_id)
+              : Array.isArray(u?.perfiles) && u.perfiles.length > 0
+                ? String(u.perfiles[0])
+                : undefined;
+
+          return {
+            ...u,
+            id,
+            perfil_id,
+          } as Usuario;
+        })
       )
     );
   }
 
-  getUsuario(id: string): Observable<Usuario> {
-    return this.http.get<Usuario>(`${this.apiUrl}/${id}`).pipe(
-      map((u) => ({
-        ...u,
-        perfiles: u.perfiles?.map((p) => ({ ...p, id: p.id || p.id })),
-      }))
+  getUsuario(id: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map((data) => {
+        const usuario = data?.usuario ?? {};
+        const usuarioId = String(usuario?._id ?? usuario?.id ?? '');
+
+        const perfil_id =
+          usuario?.perfil_id != null && usuario?.perfil_id !== ''
+            ? String(usuario.perfil_id)
+            : Array.isArray(usuario?.perfiles) && usuario.perfiles.length > 0
+              ? String(usuario.perfiles[0])
+              : '';
+
+        const perfilesDocs = Array.isArray(data?.perfiles)
+          ? data.perfiles.map((p: any) => ({
+              ...p,
+              id: String(p?._id ?? p?.id ?? ''),
+            }))
+          : [];
+
+        return {
+          ...data,
+          usuario: {
+            ...usuario,
+            id: usuarioId,
+            perfil_id,
+          },
+          perfiles: perfilesDocs,
+        };
+      })
     );
   }
 
@@ -57,7 +97,6 @@ export class UsuariosService {
   }
 
   actualizarUsuario(id: string, usuario: FormData): Observable<Usuario> {
-    // Usando POST con _method=PUT
     return this.http.post<Usuario>(`${this.apiUrl}/${id}?_method=PUT`, usuario);
   }
 

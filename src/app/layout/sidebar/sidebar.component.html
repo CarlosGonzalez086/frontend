@@ -1,18 +1,81 @@
 <div class="sidebar">
-  <nav class="navbar navbar-dark bg-dark" style="height: 100vh;">
-    <ul class="nav flex-column w-100 h-100">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/dashboard" routerLinkActive="active" aria-current="page">Dashboard</a>
+  <nav
+    class="navbar navbar-dark bg-dark flex-column align-items-start p-3 shadow"
+    style="height: 100vh; width: 260px"
+  >
+    <div class="w-100 mb-4 pb-3 border-bottom border-secondary">
+      <div class="d-flex align-items-center">
+        <div
+          class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-3"
+          style="width: 45px; height: 45px"
+        >
+          <i class="bi bi-grid-fill text-white"></i>
+        </div>
+
+        <div>
+          <h5 class="text-white mb-0 fw-bold">
+            Grupo Tap
+          </h5>
+
+          <small class="text-light opacity-75">
+            Panel administrativo
+          </small>
+        </div>
+      </div>
+    </div>
+
+    <ul class="nav nav-pills flex-column w-100 gap-2">
+
+      <li class="nav-item" *ngIf="can('Dashboard')">
+        <a
+          class="nav-link d-flex align-items-center rounded-3 px-3 py-2"
+          routerLink="/dashboard"
+          routerLinkActive="active"
+          aria-current="page"
+        >
+          <i class="bi bi-speedometer2 me-3"></i>
+          Dashboard
+        </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/productos" routerLinkActive="active">Productos</a>
+
+      <li class="nav-item" *ngIf="can('Productos')">
+        <a
+          class="nav-link d-flex align-items-center rounded-3 px-3 py-2"
+          routerLink="/productos"
+          routerLinkActive="active"
+        >
+          <i class="bi bi-box-seam me-3"></i>
+          Productos
+        </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/perfiles" routerLinkActive="active">Perfiles</a>
+
+      <li class="nav-item" *ngIf="can('Perfiles')">
+        <a
+          class="nav-link d-flex align-items-center rounded-3 px-3 py-2"
+          routerLink="/perfiles"
+          routerLinkActive="active"
+        >
+          <i class="bi bi-person-badge me-3"></i>
+          Perfiles
+        </a>
       </li>
-            <li class="nav-item">
-        <a class="nav-link" routerLink="/usuarios" routerLinkActive="active">Usuarios</a>
+
+      <li class="nav-item" *ngIf="can('Usuarios')">
+        <a
+          class="nav-link d-flex align-items-center rounded-3 px-3 py-2"
+          routerLink="/usuarios"
+          routerLinkActive="active"
+        >
+          <i class="bi bi-people me-3"></i>
+          Usuarios
+        </a>
       </li>
+
     </ul>
+
+
+    <div class="mt-auto w-100 pt-3 border-top border-secondary">
+
+    </div>
   </nav>
 </div>

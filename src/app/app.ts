@@ -2,17 +2,17 @@ import { Component, signal, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './layout/header/header.component';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
-import { isPlatformBrowser, NgIf } from '@angular/common'; // <-- NgIf importado
+import { isPlatformBrowser, NgIf } from '@angular/common'; 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HeaderComponent, SidebarComponent, RouterOutlet, NgIf], // <-- NgIf agregado
+  imports: [HeaderComponent, SidebarComponent, RouterOutlet, NgIf], 
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
 export class App implements OnInit {
-  protected readonly title = signal('frontend');
+  protected readonly title = signal('Grupo TAP - Sistema');
 
   isSidebarCollapsed = false;
   isBrowser = false;

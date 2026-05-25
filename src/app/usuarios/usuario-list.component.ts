@@ -7,7 +7,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 @Component({
   selector: 'app-usuario-list',
   standalone: true,
-  imports: [CommonModule, DatePipe, RouterModule], // <-- agregar DatePipe aquí
+  imports: [CommonModule, DatePipe, RouterModule], 
   templateUrl: './usuario-list.component.html',
 })
 export class UsuarioListComponent implements OnInit {

@@ -1,30 +1,69 @@
-<div class="container mt-3" style="max-width: 500px">
-  <div class="card">
-    <div class="card-header text-center">
-      <h3>{{ id ? 'Editar Usuario' : 'Nuevo Usuario' }}</h3>
+<div class="container py-4">
+  <div class="card border-0 shadow-lg rounded-4 mx-auto overflow-hidden" style="max-width: 700px">
+    <div class="bg-primary text-white p-4">
+      <div class="d-flex align-items-center">
+        <div
+          class="bg-white bg-opacity-25 rounded-circle d-flex justify-content-center align-items-center me-3"
+          style="width: 65px; height: 65px"
+        >
+          <i
+            class="bi"
+            [ngClass]="id ? 'bi-pencil-square' : 'bi-person-plus-fill'"
+            style="font-size: 30px"
+          ></i>
+        </div>
+
+        <div>
+          <h3 class="fw-bold mb-1">
+            {{ id ? 'Editar Usuario' : 'Nuevo Usuario' }}
+          </h3>
+
+          <p class="mb-0 opacity-75">
+            {{
+              id
+                ? 'Actualiza la información del usuario'
+                : 'Completa los datos para registrar un usuario'
+            }}
+          </p>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
+
+    <div class="card-body p-4">
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <!-- Foto de perfil -->
-        <div class="mb-3 text-center">
-          <label class="form-label d-block">Foto de perfil</label>
-          <div class="mb-2">
+        <div class="text-center mb-4">
+          <label class="form-label fw-semibold d-block"> Foto de perfil </label>
+
+          <div class="mb-3">
             <img
-              [src]="previewUrl || 'assets/default-avatar.png'"
+              [src]="
+                previewUrl
+                  ? previewUrl
+                  : 'https://ui-avatars.com/api/?name=Usuario&background=0D6EFD&color=fff&size=256'
+              "
               alt="Avatar"
-              class="avatar-preview"
+              class="rounded-circle border shadow-sm"
+              style="width: 120px; height: 120px; object-fit: cover"
             />
           </div>
-          <button type="button" class="btn btn-primary btn-sm" (click)="fileInput.click()">
+
+          <button
+            type="button"
+            class="btn btn-outline-primary rounded-3"
+            (click)="fileInput.click()"
+          >
+            <i class="bi bi-upload me-2"></i>
             Cargar foto
           </button>
+
           <input
             #fileInput
             type="file"
-            style="display: none"
+            class="d-none"
             (change)="onFileSelected($event)"
-            accept="image/*"
+            accept=".jpg,.jpeg,.png,.gif,.webp"
           />
+
           <div
             *ngIf="form.get('fotoPerfil')?.invalid && form.get('fotoPerfil')?.touched"
             class="invalid-feedback d-block"
@@ -33,69 +72,120 @@
           </div>
         </div>
 
-        <!-- Nombre -->
-        <div class="mb-3">
-          <label class="form-label">Nombre</label>
-          <input
-            type="text"
-            class="form-control"
-            formControlName="nombre"
-            [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
-          />
-          <div class="invalid-feedback">El nombre es obligatorio</div>
+        <div class="row">
+          <!-- Nombre -->
+          <div class="col-md-6 mb-4">
+            <label class="form-label fw-semibold"> Nombre </label>
+
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-person text-muted"></i>
+              </span>
+
+              <input
+                type="text"
+                class="form-control"
+                formControlName="nombre"
+                placeholder="Nombre completo"
+                [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
+              />
+
+              <div class="invalid-feedback">El nombre es obligatorio</div>
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-4">
+            <label class="form-label fw-semibold"> Usuario (Email) </label>
+
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-envelope text-muted"></i>
+              </span>
+
+              <input
+                type="email"
+                class="form-control"
+                formControlName="usuario"
+                placeholder="correo@email.com"
+                [class.is-invalid]="form.get('usuario')?.invalid && form.get('usuario')?.touched"
+              />
+
+              <div class="invalid-feedback">El correo es obligatorio y debe ser válido</div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <label class="form-label fw-semibold"> Contraseña </label>
+
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-lock text-muted"></i>
+              </span>
+
+              <input
+                type="password"
+                class="form-control"
+                formControlName="password"
+                placeholder="••••••••"
+                [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched"
+              />
+
+              <div class="invalid-feedback">La contraseña es obligatoria (mín. 6 caracteres)</div>
+            </div>
+          </div>
+          <div class="col-md-6 mb-4">
+            <label class="form-label fw-semibold"> Teléfono </label>
+
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-telephone text-muted"></i>
+              </span>
+
+              <input
+                type="text"
+                class="form-control"
+                formControlName="telefono"
+                placeholder="Número telefónico"
+                [class.is-invalid]="form.get('telefono')?.invalid && form.get('telefono')?.touched"
+              />
+            </div>
+          </div>
+          <div class="col-12 mb-4">
+            <label class="form-label fw-semibold"> Perfil </label>
+
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="bi bi-person-badge text-muted"></i>
+              </span>
+
+              <select class="form-select" formControlName="perfil">
+                <option value="" disabled>Seleccione un perfil</option>
+
+                <option *ngFor="let perfil of perfiles" [value]="perfil.id">
+                  {{ perfil.nombre }}
+                </option>
+              </select>
+            </div>
+
+            <div
+              *ngIf="form.get('perfil')?.invalid && form.get('perfil')?.touched"
+              class="invalid-feedback d-block"
+            >
+              Debe seleccionar un perfil
+            </div>
+          </div>
         </div>
 
-        <!-- Usuario (Email) -->
-        <div class="mb-3">
-          <label class="form-label">Usuario (Email)</label>
-          <input
-            type="email"
-            class="form-control"
-            formControlName="usuario"
-            [class.is-invalid]="form.get('usuario')?.invalid && form.get('usuario')?.touched"
-          />
-          <div class="invalid-feedback">El correo es obligatorio y debe ser válido</div>
-        </div>
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-end">
+          <button type="button" class="btn btn-light border rounded-3 px-4" (click)="cancel()">
+            <i class="bi bi-arrow-left me-2"></i>
+            Cancelar
+          </button>
 
-        <!-- Contraseña -->
-        <div class="mb-3">
-          <label class="form-label">Contraseña</label>
-          <input
-            type="password"
-            class="form-control"
-            formControlName="password"
-            [class.is-invalid]="form.get('password')?.invalid && form.get('password')?.touched"
-          />
-          <div class="invalid-feedback">La contraseña es obligatoria (mín. 6 caracteres)</div>
-        </div>
+          <button type="submit" class="btn btn-primary rounded-3 px-4 shadow-sm">
+            <i class="bi me-2" [ngClass]="id ? 'bi-check-circle' : 'bi-save'"></i>
 
-        <!-- Teléfono -->
-        <div class="mb-3">
-          <label class="form-label">Teléfono</label>
-          <input
-            type="text"
-            class="form-control"
-            formControlName="telefono"
-            [class.is-invalid]="form.get('telefono')?.invalid && form.get('telefono')?.touched"
-          />
-        </div>
-
-        <!-- Perfiles -->
-        <div class="mb-3">
-          <label class="form-label">Perfiles</label>
-          <select
-            class="form-select"
-            multiple
-            [value]="selectedPerfiles"
-            (change)="onPerfilesChange($event)"
-          >
-            <option *ngFor="let perfil of perfiles" [value]="perfil.id">{{ perfil.nombre }}</option>
-          </select>
-        </div>
-
-        <div class="d-flex justify-content-between">
-          <button type="submit" class="btn btn-primary">{{ id ? 'Actualizar' : 'Guardar' }}</button>
-          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+            {{ id ? 'Actualizar' : 'Guardar' }}
+          </button>
         </div>
       </form>
     </div>

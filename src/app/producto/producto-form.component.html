@@ -1,56 +1,109 @@
-<div class="container mt-3" style="max-width: 500px">
-  <div class="card">
-    <div class="card-header text-center">
-      <h3>{{ id ? 'Editar Producto' : 'Nuevo Producto' }}</h3>
+<div class="container py-4">
+  <div class="card border-0 shadow-lg rounded-4 mx-auto overflow-hidden" style="max-width: 650px">
+    <div class="bg-primary text-white p-4">
+      <div class="d-flex align-items-center">
+        <div
+          class="bg-white bg-opacity-25 rounded-circle d-flex justify-content-center align-items-center me-3"
+          style="width: 65px; height: 65px"
+        >
+          <i
+            class="bi"
+            [ngClass]="id ? 'bi-pencil-square' : 'bi-box-seam'"
+            style="font-size: 30px"
+          ></i>
+        </div>
+
+        <div>
+          <h3 class="fw-bold mb-1">
+            {{ id ? 'Editar Producto' : 'Nuevo Producto' }}
+          </h3>
+
+          <p class="mb-0 opacity-75">
+            {{
+              id
+                ? 'Actualiza la información del producto'
+                : 'Completa los datos para registrar un producto'
+            }}
+          </p>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
+
+    <div class="card-body p-4">
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <!-- Nombre -->
-        <div class="mb-3">
-          <label for="nombre" class="form-label">Nombre</label>
-          <input
-            type="text"
-            id="nombre"
-            class="form-control"
-            formControlName="nombre"
-            [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
-          />
-          <div class="invalid-feedback">El nombre es obligatorio</div>
+        <div class="mb-4">
+          <label for="nombre" class="form-label fw-semibold"> Nombre del producto </label>
+
+          <div class="input-group">
+            <span class="input-group-text bg-white">
+              <i class="bi bi-box text-muted"></i>
+            </span>
+
+            <input
+              type="text"
+              id="nombre"
+              class="form-control"
+              formControlName="nombre"
+              placeholder="Ej. Laptop Gamer"
+              [class.is-invalid]="form.get('nombre')?.invalid && form.get('nombre')?.touched"
+            />
+
+            <div class="invalid-feedback">El nombre es obligatorio</div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label for="marca" class="form-label fw-semibold"> Marca </label>
+
+          <div class="input-group">
+            <span class="input-group-text bg-white">
+              <i class="bi bi-tag text-muted"></i>
+            </span>
+
+            <input
+              type="text"
+              id="marca"
+              class="form-control"
+              formControlName="marca"
+              placeholder="Ej. HP, Samsung, Apple"
+              [class.is-invalid]="form.get('marca')?.invalid && form.get('marca')?.touched"
+            />
+
+            <div class="invalid-feedback">La marca es obligatoria</div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label for="precio" class="form-label fw-semibold"> Precio </label>
+
+          <div class="input-group">
+            <span class="input-group-text bg-white">
+              <i class="bi bi-currency-dollar text-muted"></i>
+            </span>
+
+            <input
+              type="number"
+              id="precio"
+              class="form-control"
+              formControlName="precio"
+              placeholder="0"
+              min="1"
+              [class.is-invalid]="form.get('precio')?.invalid && form.get('precio')?.touched"
+            />
+
+            <div class="invalid-feedback">El precio es obligatorio y debe ser mayor a 0</div>
+          </div>
         </div>
 
-        <!-- Marca -->
-        <div class="mb-3">
-          <label for="marca" class="form-label">Marca</label>
-          <input
-            type="text"
-            id="marca"
-            class="form-control"
-            formControlName="marca"
-            [class.is-invalid]="form.get('marca')?.invalid && form.get('marca')?.touched"
-          />
-          <div class="invalid-feedback">La marca es obligatoria</div>
-        </div>
+        <div class="d-flex flex-column flex-md-row gap-2 justify-content-end">
+          <button type="button" class="btn btn-light border rounded-3 px-4" (click)="cancel()">
+            <i class="bi bi-arrow-left me-2"></i>
+            Cancelar
+          </button>
 
-        <!-- Precio -->
-        <div class="mb-3">
-          <label for="precio" class="form-label">Precio</label>
-          <input
-            type="number"
-            id="precio"
-            class="form-control"
-            formControlName="precio"
-            [class.is-invalid]="form.get('precio')?.invalid && form.get('precio')?.touched"
-            min="1"
-          />
-          <div class="invalid-feedback">El precio es obligatorio y debe ser mayor a 0</div>
-        </div>
+          <button type="submit" class="btn btn-primary rounded-3 px-4 shadow-sm">
+            <i class="bi me-2" [ngClass]="id ? 'bi-check-circle' : 'bi-save'"></i>
 
-        <!-- Botones -->
-        <div class="d-flex justify-content-between">
-          <button type="submit" class="btn btn-primary">
             {{ id ? 'Actualizar' : 'Guardar' }}
           </button>
-          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
         </div>
       </form>
     </div>

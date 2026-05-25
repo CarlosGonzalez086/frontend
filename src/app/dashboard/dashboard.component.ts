@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService, Rol } from '../services/AuthService';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,25 +8,37 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
   user: any;
+  rol?: Rol;
+
+  private auth = inject(AuthService);
 
   constructor(private router: Router) {}
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
-      // solo en cliente
       const storedUser = localStorage.getItem('user');
       if (!storedUser) {
         this.router.navigate(['/login']);
-        // Refrescar la página
-        window.location.reload();
       } else {
         this.user = JSON.parse(storedUser);
+
+        this.rol = this.auth.getRole();
+
+        if (!this.rol && this.user?.rol) {
+          this.rol = this.user.rol as Rol;
+        }
       }
     }
   }
 
   logout() {
-    localStorage.removeItem('user');
-    this.router.navigate(['/login']);
+    const role = this.rol ?? this.auth.getRole();
+    const target = role === 'usuario' ? '/loginUser' : '/login';
+
+    this.auth.logoutAll();
+
+    window.location.replace(target);
+
+
   }
 }
